@@ -1,0 +1,38 @@
+{
+  "tagline": "Heal. Learn. Grow. Thrive.",
+  "welcome": {
+    "heading": "A safe space for healing and growth",
+    "subtitle": "Every journey begins with a single step. You are not alone."
+  },
+  "auth": {
+    "login_title": "Welcome Back",
+    "signup_title": "Join SheTech Empower",
+    "login_subtitle": "Sign in to continue your journey",
+    "signup_subtitle": "Create an account to start your journey",
+    "switch_to_signup": "Don't have an account? Sign up",
+    "switch_to_login": "Already have an account? Log in"
+  },
+  "common": {
+    "back": "Back"
+  },
+  "roles": {
+    "heading": "I am a...",
+    "youth": {
+      "name": "Displaced Youth",
+      "description": "Access learning, healing, and mentorship"
+    },
+    "mentor": {
+      "name": "Mentor",
+      "description": "Guide and support youth in their journey"
+    },
+    "donor": {
+      "name": "Donor",
+      "description": "Contribute to microgrants and program support"
+    },
+    "admin": {
+      "name": "Admin",
+      "description": "Manage platform content and users"
+    }
+  }
+
+}

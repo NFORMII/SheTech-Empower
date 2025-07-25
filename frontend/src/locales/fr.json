@@ -1,0 +1,38 @@
+{
+  "tagline": "Guérir. Apprendre. Évoluer. S'épanouir.",
+  "welcome": {
+    "heading": "Un espace sûr pour guérir et grandir",
+    "subtitle": "Chaque voyage commence par un premier pas. Tu n'es pas seul(e)."
+  },
+  "auth": {
+    "login_title": "Bon retour",
+    "signup_title": "Rejoindre SheTech Empower",
+    "login_subtitle": "Connecte-toi pour continuer ton voyage",
+    "signup_subtitle": "Crée un compte pour commencer ton voyage",
+    "switch_to_signup": "Pas encore de compte ? Inscris-toi",
+    "switch_to_login": "Tu as déjà un compte ? Connecte-toi"
+  },
+  "common": {
+    "back": "Retour"
+  },
+  "roles": {
+    "heading": "Je suis...",
+    "youth": {
+      "name": "Jeune déplacé",
+      "description": "Accéder à l'apprentissage, à la guérison et au mentorat"
+    },
+    "mentor": {
+      "name": "Mentor",
+      "description": "Guider et soutenir les jeunes dans leur parcours"
+    },
+    "donor": {
+      "name": "Donateur",
+      "description": "Contribuer aux micro-subventions et au soutien du programme"
+    },
+    "admin": {
+      "name": "Administrateur",
+      "description": "Gérer le contenu et les utilisateurs de la plateforme"
+    }
+  }
+
+}

@@ -1,0 +1,38 @@
+{
+  "tagline": "Heal. Learn. Grow. Shine well well.",
+  "welcome": {
+    "heading": "Safe place wey go help you heal and grow",
+    "subtitle": "Every journey dey start with one step. You no dey alone."
+  },
+  "auth": {
+    "login_title": "Welcome back o",
+    "signup_title": "Join SheTech Empower make you start",
+    "login_subtitle": "Login make you continue your waka",
+    "signup_subtitle": "Create account make your journey start",
+    "switch_to_signup": "You never get account? Sign up",
+    "switch_to_login": "You don get account? Login"
+  },
+  "common": {
+    "back": "Go back"
+  },
+  "roles": {
+    "heading": "Na who you be?",
+    "youth": {
+      "name": "Displace Youth",
+      "description": "Come learn, heal and get better wit mentorship"
+    },
+    "mentor": {
+      "name": "Mentor",
+      "description": "Help guide and support di youths for their journey"
+    },
+    "donor": {
+      "name": "Donor",
+      "description": "Support di program wit money or help"
+    },
+    "admin": {
+      "name": "Admin",
+      "description": "Manage platform people and wetin dey for inside"
+    }
+  }
+
+}
