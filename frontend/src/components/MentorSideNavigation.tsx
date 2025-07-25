@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Users, 
@@ -9,11 +9,20 @@ import {
   Calendar,
   MessageSquare,
   Settings,
-  GraduationCap
+  GraduationCap,
+  LogOut
 } from 'lucide-react';
 
 export const MentorSideNavigation: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear any auth tokens or user data from localStorage
+    localStorage.clear();
+    // Navigate to login page
+    navigate('/login');
+  };
 
   const menuItems = [
     { 
@@ -109,6 +118,13 @@ export const MentorSideNavigation: React.FC = () => {
                 </Link>
               );
             })}
+            <button
+              onClick={handleLogout}
+              className="w-full group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+            >
+              <LogOut className="mr-3 flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+              Logout
+            </button>
           </nav>
         </div>
         <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
