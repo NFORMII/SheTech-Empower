@@ -4,4 +4,6 @@ from .views import DashboardView
 
 urlpatterns = [
     path('', DashboardView.as_view(), name='youth-dashboard'),
+    path('', DashboardView.as_view(), name='mentor-dashboard'),
+    path('', DashboardView.as_view(), name='donor-dashboard'),
 ]

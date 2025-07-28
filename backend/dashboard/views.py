@@ -41,7 +41,7 @@ class DashboardView(APIView):
             microgrant = MicrograntApplication.objects.filter(user=user).first()
 
             # Mentorship placeholder
-            mentorship_session_time = "Tomorrow, 2PM"  # Replace with real logic
+            mentorship_session_time = "Tomorrow, 8qPM"  # Replace with real logic
 
             # Notifications
             notifications = [
@@ -79,3 +79,5 @@ class DashboardView(APIView):
             "Anxious": {"emoji": "😰", "label": "Anxious"},
         }
         return mood_map.get(label, {"label": label, "emoji": "❓"})
+
+
