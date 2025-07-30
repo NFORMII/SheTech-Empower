@@ -22,7 +22,7 @@ const ProfilePage: React.FC = () => {
   }, []);
 
   if (loading) return <div className="text-center py-10">Loading...</div>;
-  if (!profile) return <div className="text-center py-10">Profile not found.</div>;
+  if (!profile) return <div className="text-center py-10"></div>;
 
   const { full_name, email, role, image, rating, available, expertise = [] } = profile;
 

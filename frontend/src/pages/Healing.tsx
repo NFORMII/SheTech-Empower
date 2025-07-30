@@ -2,34 +2,21 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { Navigation, SideNavigation } from '../components/Navigation';
 import { Button } from '../components/Button';
-import { BookIcon, MessageSquareIcon, HeadphonesIcon, VideoIcon } from 'lucide-react';
+import { MessageSquareIcon, HeadphonesIcon, VideoIcon } from 'lucide-react'; // BookIcon removed as journal moved
 import { formatDistanceToNow } from 'date-fns';
 
 const Healing: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('journal');
-
-  const [journal, setJournal] = useState('');
-  const [anonymous, setAnonymous] = useState(false);
+  // 'journal' tab is removed, default to 'support' or first available tab
+  const [activeTab, setActiveTab] = useState<string>('support');
 
   const handleMoodCheckIn = async (mood: string) => {
     try {
       await api.post('/healing/mood/checkin/', { mood });
+      // Optional: Add a small confirmation or UI feedback
+      alert(`Mood checked in as: ${mood}`);
     } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleJournalSubmit = async () => {
-    try {
-      await api.post('/healing/journal/entry/', {
-        content: journal,
-        anonymous,
-      });
-      alert('Journal saved!');
-      setJournal('');
-      setAnonymous(false);
-    } catch (err) {
-      console.error(err);
+      console.error('Mood check-in failed:', err);
+      alert('Failed to check in mood. Please try again.');
     }
   };
 
@@ -43,7 +30,7 @@ const Healing: React.FC = () => {
       const res = await api.get('/healing/support/posts/');
       setPosts(res.data);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fetch posts:', err);
     }
   };
 
@@ -60,9 +47,11 @@ const Healing: React.FC = () => {
       });
       setPostContent('');
       setPostAnon(true);
-      fetchPosts();
+      fetchPosts(); // Refresh posts after submitting
+      alert('Post submitted successfully!');
     } catch (err) {
-      console.error(err);
+      console.error('Failed to submit post:', err);
+      alert('Failed to submit post. Please try again.');
     }
   };
 
@@ -78,7 +67,6 @@ const Healing: React.FC = () => {
   ];
 
   const tabs = [
-    { id: 'journal', label: 'Journal', icon: <BookIcon size={18} /> },
     { id: 'support', label: 'Support', icon: <MessageSquareIcon size={18} /> },
     { id: 'audio', label: 'Audio', icon: <HeadphonesIcon size={18} /> },
     { id: 'video', label: 'Video', icon: <VideoIcon size={18} /> },
@@ -137,33 +125,6 @@ const Healing: React.FC = () => {
               ))}
             </div>
             <div className="p-6">
-              {activeTab === 'journal' && (
-                <div className="space-y-6">
-                  <h3 className="text-lg font-montserrat font-medium text-gray-800">Your Safe Space to Express</h3>
-                  <p className="text-gray-600">
-                    Write your thoughts, feelings, and experiences. Your journal is private unless you choose to share anonymously.
-                  </p>
-                  <textarea
-                    value={journal}
-                    onChange={(e) => setJournal(e.target.value)}
-                    className="w-full h-40 p-4 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                    placeholder="What's on your mind today?"
-                  />
-                  <div className="flex items-center justify-between">
-                    <label className="flex items-center text-sm text-gray-600">
-                      <input
-                        type="checkbox"
-                        checked={anonymous}
-                        onChange={(e) => setAnonymous(e.target.checked)}
-                        className="mr-2"
-                      />
-                      Share anonymously with the community
-                    </label>
-                    <Button onClick={handleJournalSubmit}>Save Journal Entry</Button>
-                  </div>
-                </div>
-              )}
-
               {activeTab === 'support' && (
                 <div className="space-y-6">
                   <h3 className="text-lg font-montserrat font-medium text-gray-800">Peer Support Forum</h3>
@@ -228,125 +189,134 @@ const Healing: React.FC = () => {
                 </div>
               )}
 
-            {activeTab === 'audio' && <div className="space-y-6">
-                <h3 className="text-lg font-montserrat font-medium text-gray-800">
-                  Audio Healing Resources
-                </h3>
-                <p className="text-gray-600">
-                  Listen to guided meditations, calming music, and therapeutic
-                  exercises.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="border border-gray-200 rounded-lg p-4">
-                    <div className="flex items-center">
-                      <div className="bg-primary/10 p-4 rounded-lg">
-                        <HeadphonesIcon className="h-8 w-8 text-primary" />
+              {activeTab === 'audio' && (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-montserrat font-medium text-gray-800">
+                    Audio Healing Resources
+                  </h3>
+                  <p className="text-gray-600">
+                    Listen to guided meditations, calming music, and therapeutic
+                    exercises.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Guided Breathing Exercise Audio */}
+                    <div className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-center mb-4">
+                        <div className="bg-primary/10 p-4 rounded-lg">
+                          <HeadphonesIcon className="h-8 w-8 text-primary" />
+                        </div>
+                        <div className="ml-4">
+                          <h4 className="font-medium">
+                            Guided Breathing Exercise
+                          </h4>
+                          <p className="text-sm text-gray-500">Approximately 5 minutes</p>
+                        </div>
                       </div>
-                      <div className="ml-4">
-                        <h4 className="font-medium">
-                          Guided Breathing Exercise
-                        </h4>
-                        <p className="text-sm text-gray-500">5 minutes</p>
-                      </div>
+                      {/* Audio embed */}
+                      <audio controls src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" className="w-full"></audio>
+                      <p className="text-xs text-gray-500 mt-2">Source: soundhelix.com (royalty-free music for demonstration)</p>
                     </div>
-                    <div className="mt-4">
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div className="bg-primary h-1.5 rounded-full" style={{
-                      width: '30%'
-                    }}></div>
-                      </div>
-                      <div className="flex justify-between text-xs text-gray-500 mt-1">
-                        <span>1:30</span>
-                        <span>5:00</span>
-                      </div>
-                    </div>
-                    <button className="mt-2 w-full py-2 bg-primary text-white rounded-lg">
-                      Play
-                    </button>
-                  </div>
-                  <div className="border border-gray-200 rounded-lg p-4">
-                    <div className="flex items-center">
-                      <div className="bg-primary/10 p-4 rounded-lg">
-                        <HeadphonesIcon className="h-8 w-8 text-primary" />
-                      </div>
-                      <div className="ml-4">
-                        <h4 className="font-medium">Healing from Trauma</h4>
-                        <p className="text-sm text-gray-500">15 minutes</p>
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div className="bg-primary h-1.5 rounded-full" style={{
-                      width: '0%'
-                    }}></div>
-                      </div>
-                      <div className="flex justify-between text-xs text-gray-500 mt-1">
-                        <span>0:00</span>
-                        <span>15:00</span>
-                      </div>
-                    </div>
-                    <button className="mt-2 w-full py-2 bg-primary text-white rounded-lg">
-                      Play
-                    </button>
-                  </div>
-                </div>
-              </div>}
-            {activeTab === 'video' && <div className="space-y-6">
-                <h3 className="text-lg font-montserrat font-medium text-gray-800">
-                  Video Healing Resources
-                </h3>
-                <p className="text-gray-600">
-                  Watch therapeutic videos, skill-building workshops, and
-                  inspirational stories.
-                </p>
-                <div className="grid grid-cols-1 gap-6">
-                  <div className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="relative pb-[56.25%] bg-gray-100">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <VideoIcon className="h-16 w-16 text-gray-400" />
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <h4 className="font-medium">
-                        Understanding Trauma & Building Resilience
-                      </h4>
-                      <p className="text-sm text-gray-500 mt-1">
-                        20 minutes • Dr. Maya Johnson
-                      </p>
-                      <p className="text-sm text-gray-600 mt-2">
-                        Learn about how trauma affects the brain and practical
-                        techniques to build resilience.
-                      </p>
-                      <button className="mt-4 w-full py-2 bg-primary text-white rounded-lg">
-                        Watch Video
-                      </button>
-                    </div>
-                  </div>
-                  <div className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="relative pb-[56.25%] bg-gray-100">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <VideoIcon className="h-16 w-16 text-gray-400" />
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <h4 className="font-medium">
-                        Stories of Hope: From Displacement to Empowerment
-                      </h4>
-                      <p className="text-sm text-gray-500 mt-1">
-                        15 minutes • Community Stories
-                      </p>
-                      <p className="text-sm text-gray-600 mt-2">
-                        Listen to inspiring stories from women who have
-                        overcome similar challenges.
-                      </p>
-                      <button className="mt-4 w-full py-2 bg-primary text-white rounded-lg">
-                        Watch Video
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>}
 
+                    {/* Healing from Trauma Audio */}
+                    <div className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-center mb-4">
+                        <div className="bg-primary/10 p-4 rounded-lg">
+                          <HeadphonesIcon className="h-8 w-8 text-primary" />
+                        </div>
+                        <div className="ml-4">
+                          <h4 className="font-medium">Healing from Trauma Meditation</h4>
+                          <p className="text-sm text-gray-500">Approximately 15 minutes</p>
+                        </div>
+                      </div>
+                      {/* Audio embed */}
+                      <audio controls src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" className="w-full"></audio>
+                      <p className="text-xs text-gray-500 mt-2">Source: soundhelix.com (royalty-free music for demonstration)</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'video' && (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-montserrat font-medium text-gray-800">
+                    Video Healing Resources
+                  </h3>
+                  <p className="text-gray-600">
+                    Watch therapeutic videos, skill-building workshops, and
+                    inspirational stories.
+                  </p>
+                  <div className="grid grid-cols-1 gap-6">
+                    {/* First Video Embed (from previous instruction) */}
+                    <div className="border border-gray-200 rounded-lg overflow-hidden">
+                      <div className="relative pb-[56.25%] bg-gray-100">
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          src="https://www.youtube.com/embed/1ep4iC3vRyA?si=a3eqtb6cc6nbFNXG"
+                          title="YouTube video player"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allowFullScreen
+                          className="absolute top-0 left-0"
+                        ></iframe>
+                      </div>
+                      <div className="p-4">
+                        <h4 className="font-medium">
+                          Understanding Trauma & Building Resilience
+                        </h4>
+                        <p className="text-sm text-gray-500 mt-1">
+                          20 minutes • Dr. Maya Johnson
+                        </p>
+                        <p className="text-sm text-gray-600 mt-2">
+                          Learn about how trauma affects the brain and practical
+                          techniques to build resilience.
+                        </p>
+                        <button className="mt-4 w-full py-2 bg-primary text-white rounded-lg">
+                          Watch Video
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Second Video Embed (Anti-Depression Comedy - VALID PLACEHOLDER) */}
+                    <div className="border border-gray-200 rounded-lg overflow-hidden">
+                      <div className="relative pb-[56.25%] bg-gray-100">
+                        {/*
+                          IMPORTANT: Replace this 'src' with the actual YouTube embed URL
+                          of your chosen anti-depression comedy video.
+                          Example: "https://www.youtube.com/embed/dQw4w9WgXcQ" (a well-known, harmless public video for testing)
+                          Or find a specific comedy sketch/stand-up suitable for uplifting mood.
+                        */}
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          src="https://www.youtube.com/embed/funny_mood_boost_example" // REPLACE THIS with your chosen video's actual embed URL
+                          title="Anti-Depression Comedy Video"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allowFullScreen
+                          className="absolute top-0 left-0"
+                        ></iframe>
+                      </div>
+                      <div className="p-4">
+                        <h4 className="font-medium">
+                          Boost Your Mood: Anti-Depression Comedy
+                        </h4>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Enjoy a dose of laughter and lighten your mood.
+                        </p>
+                        <p className="text-sm text-gray-600 mt-2">
+                          A curated selection of uplifting and funny clips to help you feel better.
+                        </p>
+                        <button className="mt-4 w-full py-2 bg-primary text-white rounded-lg">
+                          Watch Video
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </main>

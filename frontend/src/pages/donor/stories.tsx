@@ -5,7 +5,8 @@ import { DonorSideNavigation } from '../../components/DonorSideNavigation';
 import { 
   HeartIcon,
   MessageSquareIcon,
-  ShareIcon
+  ShareIcon,
+  UserIcon // Added for profile
 } from 'lucide-react';
 
 interface Story {
@@ -25,12 +26,35 @@ interface Story {
   amount_raised?: number;
 }
 
+// New interfaces for comments and profiles
+interface Comment {
+  id: number;
+  story: number;
+  author: string;
+  content: string;
+  created_at: string;
+}
+
+interface UserProfile {
+  id: number;
+  username: string;
+  bio: string;
+  // Add other profile details you might have, e.g., avatar, total donations
+}
+
 const DonorStories: React.FC = () => {
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [activeCategory, setActiveCategory] = useState('all');
+
+  // New states for interactions
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [currentStoryId, setCurrentStoryId] = useState<number | null>(null);
+  const [commentText, setCommentText] = useState('');
+  const [storyComments, setStoryComments] = useState<Comment[]>([]);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(null);
 
   const categories = [
     { id: 'all', label: 'All Stories' },
@@ -55,19 +79,100 @@ const DonorStories: React.FC = () => {
     };
 
     fetchStories();
-  }, []);
+  }, [activeCategory]); // Added activeCategory to dependency array
 
   const handleDonate = async (storyId: number, amount: number) => {
     try {
       await api.post(`/stories/${storyId}/donate/`, { amount });
-      // Refresh stories after donation
-      const response = await api.get('/stories/available/');
+      // Ideally, you'd fetch only the updated story or update its raised amount in state
+      // For simplicity here, we re-fetch all stories for now.
+      const response = await api.get(`/stories/?category=${activeCategory}&needs_funding=true`);
       setStories(response.data);
     } catch (err: any) {
       console.error('Failed to process donation:', err);
+      // You might want to display an error to the user
     }
   };
 
+  // --- New Interaction Handlers ---
+
+  const handleLike = async (storyId: number) => {
+    try {
+      await api.post(`/stories/${storyId}/like/`);
+      setStories(prevStories =>
+        prevStories.map(story =>
+          story.id === storyId ? { ...story, likes: (story.likes || 0) + 1 } : story
+        )
+      );
+    } catch (err: any) {
+      console.error('Failed to like story:', err);
+      // Handle error, e.g., show a toast notification
+    }
+  };
+
+  const handleOpenCommentModal = async (storyId: number) => {
+    setCurrentStoryId(storyId);
+    try {
+      const response = await api.get(`/stories/${storyId}/comments/`);
+      setStoryComments(response.data);
+      setShowCommentModal(true);
+    } catch (err: any) {
+      console.error('Failed to fetch comments:', err);
+      // Handle error
+    }
+  };
+
+  const handlePostComment = async () => {
+    if (!currentStoryId || !commentText.trim()) return;
+
+    try {
+      const response = await api.post(`/stories/${currentStoryId}/comments/`, {
+        content: commentText
+      });
+      setStoryComments(prevComments => [...prevComments, response.data]);
+      setCommentText('');
+      // Optionally, update the comment count on the story itself
+      setStories(prevStories =>
+        prevStories.map(story =>
+          story.id === currentStoryId ? { ...story, comments: (story.comments || 0) + 1 } : story
+        )
+      );
+    } catch (err: any) {
+      console.error('Failed to post comment:', err);
+      // Handle error
+    }
+  };
+
+  const handleShare = (story: Story) => {
+    if (navigator.share) {
+      navigator.share({
+        title: story.title || 'A Story of Hope',
+        text: story.description || story.content.substring(0, 100) + '...',
+        url: `${window.location.origin}/stories/${story.id}`, // Example URL
+      })
+      .then(() => console.log('Successfully shared'))
+      .catch((error) => console.error('Error sharing:', error));
+    } else {
+      // Fallback for browsers that don't support Web Share API
+      alert(`You can share this story: ${window.location.origin}/stories/${story.id}`);
+      // Or implement a custom share dialog
+    }
+  };
+
+  const handleViewProfile = async (author: string) => {
+    try {
+      // Assuming your API has an endpoint to fetch user profiles by username/author
+      const response = await api.get(`/profiles/${author}/`); 
+      setCurrentProfile(response.data);
+      setShowProfileModal(true);
+    } catch (err: any) {
+      console.error('Failed to fetch profile:', err);
+      // Handle error, e.g., "Profile not found"
+      alert('Could not load user profile.');
+    }
+  };
+
+  // --- Render Logic ---
   if (loading) {
     return <div className="text-center py-10">Loading...</div>;
   }
@@ -119,18 +224,28 @@ const DonorStories: React.FC = () => {
                       <div className="ml-3">
                         <p className="font-medium text-gray-800">
                           {story.anonymous ? 'Anonymous' : story.author}
+                          {!story.anonymous && (
+                            <button
+                              onClick={() => handleViewProfile(story.author)}
+                              className="ml-2 text-primary hover:text-primary-dark"
+                              title="View Profile"
+                            >
+                              <UserIcon size={16} />
+                            </button>
+                          )}
                         </p>
                         <p className="text-xs text-gray-500">{story.created_at}</p>
                       </div>
                     </div>
+                    {/* FIXED: Corrected ternary operator logic */}
                     <span className={`text-xs px-3 py-1 rounded-full ${
                       story.category === 'healing'
                         ? 'bg-primary/10 text-primary'
                         : story.category === 'hope'
                         ? 'bg-blue-100 text-blue-800'
-                        : story.category === 'growth'
+                        : story.category === 'growth' // Added missing condition here
                         ? 'bg-green-100 text-green-800'
-                        : 'bg-purple-100 text-purple-800'
+                        : 'bg-purple-100 text-purple-800' // Default for 'business' or other
                     }`}>
                       {story.category.charAt(0).toUpperCase() + story.category.slice(1)}
                     </span>
@@ -142,7 +257,7 @@ const DonorStories: React.FC = () => {
                   {story.image && (
                     <div className="mt-4">
                       <img
-                        src={story.image}
+                        src={story.image_url || story.image} // Use image_url if available
                         alt="Story"
                         className="rounded-lg w-full h-auto"
                       />
@@ -163,7 +278,7 @@ const DonorStories: React.FC = () => {
                       />
                     </div>
                     <button
-                      onClick={() => handleDonate(story.id, 10)}
+                      onClick={() => handleDonate(story.id, 10)} // Example donation amount
                       className="mt-4 w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition-colors"
                     >
                       Support This Story
@@ -173,16 +288,25 @@ const DonorStories: React.FC = () => {
 
                 <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
                   <div className="flex space-x-6">
-                    <button className="flex items-center text-gray-500 hover:text-primary">
+                    <button 
+                      onClick={() => handleLike(story.id)}
+                      className="flex items-center text-gray-500 hover:text-primary"
+                    >
                       <HeartIcon size={18} className="mr-1" />
                       <span className="text-sm">{story.likes || 0}</span>
                     </button>
-                    <button className="flex items-center text-gray-500 hover:text-primary">
+                    <button 
+                      onClick={() => handleOpenCommentModal(story.id)}
+                      className="flex items-center text-gray-500 hover:text-primary"
+                    >
                       <MessageSquareIcon size={18} className="mr-1" />
                       <span className="text-sm">{story.comments || 0}</span>
                     </button>
                   </div>
-                  <button className="flex items-center text-gray-500 hover:text-primary">
+                  <button 
+                    onClick={() => handleShare(story)}
+                    className="flex items-center text-gray-500 hover:text-primary"
+                  >
                     <ShareIcon size={18} className="mr-1" />
                     <span className="text-sm">Share</span>
                   </button>
@@ -193,6 +317,70 @@ const DonorStories: React.FC = () => {
         </main>
       </div>
       <Navigation />
+
+      {/* Comment Modal */}
+      {showCommentModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h2 className="text-xl font-semibold mb-4">Comments</h2>
+            <div className="max-h-60 overflow-y-auto mb-4">
+              {storyComments.length === 0 ? (
+                <p className="text-gray-500">No comments yet. Be the first to comment!</p>
+              ) : (
+                storyComments.map(comment => (
+                  <div key={comment.id} className="mb-3 p-2 bg-gray-50 rounded">
+                    <p className="font-medium text-gray-800">{comment.author}</p>
+                    <p className="text-gray-700 text-sm">{comment.content}</p>
+                    <p className="text-xs text-gray-500 mt-1">{comment.created_at}</p>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="flex mb-4">
+              <input
+                type="text"
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                placeholder="Write a comment..."
+                className="flex-grow border border-gray-300 rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <button
+                onClick={handlePostComment}
+                className="bg-primary text-white px-4 py-2 rounded-r-md hover:bg-primary-dark"
+              >
+                Post
+              </button>
+            </div>
+            <button
+              onClick={() => setShowCommentModal(false)}
+              className="w-full bg-gray-200 text-gray-800 py-2 rounded-md hover:bg-gray-300"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Modal */}
+      {showProfileModal && currentProfile && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h2 className="text-xl font-semibold mb-4">User Profile: {currentProfile.username}</h2>
+            <div className="mb-4">
+              <p className="text-gray-700">
+                <strong>Bio:</strong> {currentProfile.bio || 'No bio available.'}
+              </p>
+              {/* Add more profile details here */}
+            </div>
+            <button
+              onClick={() => setShowProfileModal(false)}
+              className="w-full bg-gray-200 text-gray-800 py-2 rounded-md hover:bg-gray-300"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

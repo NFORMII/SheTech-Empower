@@ -14,11 +14,39 @@ import {
 } from 'lucide-react';
 
 const iconMap = {
-  'computer': <LaptopIcon size={24} />,
-  'code': <CodeIcon size={24} />,
-  'finance': <DollarSignIcon size={24} />,
-  'marketing': <TrendingUpIcon size={24} />,
+  computer: <LaptopIcon size={24} />,
+  code: <CodeIcon size={24} />,
+  finance: <DollarSignIcon size={24} />,
+  marketing: <TrendingUpIcon size={24} />,
 };
+
+// Featured video list
+const featuredVideos = [
+  {
+    title: "HTML, CSS & JavaScript",
+    url: "https://www.youtube.com/embed/mU6anWqZJcc"
+  },
+  {
+    title: "React JS Full Course",
+    url: "https://www.youtube.com/embed/bMknfKXIFA8"
+  },
+  {
+    title: "Node.js Crash Course",
+    url: "https://www.youtube.com/embed/fBNz5xF-Kx4"
+  },
+  {
+    title: "Python in 100 Seconds",
+    url: "https://www.youtube.com/embed/x7X9w_GIm1s"
+  },
+  {
+    title: "Git & GitHub for Beginners",
+    url: "https://www.youtube.com/embed/RGOj5yH7evk"
+  },
+  {
+    title: "Docker Explained Simply",
+    url: "https://www.youtube.com/embed/Gjnup-PuquQ"
+  }
+];
 
 const Learn: React.FC = () => {
   const [enrollments, setEnrollments] = useState([]);
@@ -35,24 +63,15 @@ const Learn: React.FC = () => {
     }
   };
 
-  const handleEnroll = async (courseId: number) => {
-    try {
-      await api.post('/learning/enrollments/', { course: courseId });
-      await fetchEnrollments(); // Refresh
-    } catch (err) {
-      console.error('Enrollment failed:', err);
-    }
-  };
-
   useEffect(() => {
     fetchEnrollments();
   }, []);
 
   const completedCount = enrollments.filter((e) => e.completed).length;
-  const averageProgress = enrollments.length > 0
-  ? enrollments.reduce((acc, e) => acc + e.progress, 0) / enrollments.length
-  : 0;
-
+  const averageProgress =
+    enrollments.length > 0
+      ? enrollments.reduce((acc, e) => acc + e.progress, 0) / enrollments.length
+      : 0;
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -65,7 +84,9 @@ const Learn: React.FC = () => {
             </h1>
           </div>
         </header>
+
         <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+
           {/* Progress Overview */}
           <div className="bg-white shadow rounded-lg p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
@@ -95,6 +116,32 @@ const Learn: React.FC = () => {
                   {completedCount} certificate{completedCount !== 1 ? 's' : ''} earned
                 </span>
               </div>
+            </div>
+          </div>
+
+          {/* Featured Videos */}
+          <div className="bg-white shadow rounded-lg p-6 mb-6">
+            <h2 className="text-lg font-montserrat font-medium text-gray-800 mb-4">
+              Featured Learning Videos
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {featuredVideos.map((video, index) => (
+                <div key={index} className="rounded overflow-hidden shadow">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <iframe
+                      src={video.url}
+                      title={video.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-48 rounded"
+                    />
+                  </div>
+                  <div className="p-2">
+                    <p className="text-sm font-medium">{video.title}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
