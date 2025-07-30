@@ -92,12 +92,22 @@ const Welcome: React.FC = () => {
         }
       }
     } catch (error: any) {
-      console.error("Auth failed:", error);
-      setAuthError(
-        error.response?.data?.message ||
-          "Authentication failed. Please try again."
-      );
+    console.error("Auth failed:", error);
+
+    // Check for DRF-style error dict
+    const errorData = error.response?.data;
+
+    if (typeof errorData === "object") {
+      // Flatten all messages into a single string
+      const messages = Object.values(errorData)
+        .flat()
+        .join(" ");
+      setAuthError(messages);
+    } else {
+      setAuthError("Authentication failed. Please try again.");
     }
+  }
+
   };
 
   const renderStep = () => {

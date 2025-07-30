@@ -28,6 +28,10 @@ export const Navigation: React.FC = () => {
     path: '/my-story',
     label: 'My Story',
     icon: <BookIcon size={20} />
+  }, {
+    path: '/my-profile',
+    label: 'My Profile',
+    icon: <BookIcon size={20} />
   }];
   const isActive = (path: string) => location.pathname === path;
   return <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg md:hidden">
@@ -64,6 +68,10 @@ export const SideNavigation: React.FC = () => {
   }, {
     path: '/my-story',
     label: 'My Story Wall',
+    icon: <BookIcon size={20} />
+  }, {
+    path: '/my-profile',
+    label: 'My Profile',
     icon: <BookIcon size={20} />
   }];
   const isActive = (path: string) => location.pathname === path;

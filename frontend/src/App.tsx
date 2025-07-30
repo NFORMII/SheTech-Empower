@@ -20,6 +20,7 @@ import MentorMentees from './pages/mentor/mentees';
 import MentorSessions from './pages/mentor/sessions';
 import MentorStories from './pages/mentor/stories';
 import MentorMicrogrants from './pages/mentor/microgrants';
+import ProfilePage from './pages/ProfilePage';
 
 export function App() {
   return (
@@ -114,7 +115,7 @@ export function App() {
                 </PrivateRoute>
               }
             />
-                        <Route path="/donor" element={
+            <Route path="/donor" element={
               <PrivateRoute>
                 <DonorDashboard />
               </PrivateRoute>
@@ -127,6 +128,11 @@ export function App() {
             <Route path="/donor/microgrants" element={
               <PrivateRoute>
                 <DonorMicrogrants />
+              </PrivateRoute>
+            } />
+            <Route path="/my-profile" element={
+              <PrivateRoute>
+                <ProfilePage />
               </PrivateRoute>
             } />
           </Routes>

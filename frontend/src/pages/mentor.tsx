@@ -27,7 +27,7 @@ const MentorDashboard: React.FC = () => {
       try {
         setIsLoading(true);
         setError(null);
-        const res = await api.get('/mentor/dashboard/');
+        const res = await api.get('/dashboard/');
         if (!res.data) {
           throw new Error('No data received from server');
         }

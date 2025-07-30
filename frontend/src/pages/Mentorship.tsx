@@ -23,7 +23,7 @@ const Mentorship: React.FC = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const response = await api.get('/mentor/');
+        const response = await api.get('/dashboard/');
         setMentors(response.data);
 
         const assigned = await api.get('/mentor/my/');
