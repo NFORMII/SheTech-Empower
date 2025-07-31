@@ -28,7 +28,11 @@ SECRET_KEY = 'django-insecure-)o&62phta+@81a#=0oxp=d2j9=7$x6bp&vn&#l8kbg%xxj*hm=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'shetech-empower-3.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
 
 
 # Application definition
