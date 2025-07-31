@@ -151,6 +151,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
 ]
 
+# CORS_ALLOWED_ORIGINS = [
+#     "https://my-application-blue.vercel.app"
+#     "https://shetech-empower-3.onrender.com",
+# ]
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
