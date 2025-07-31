@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import User
 from django.contrib.auth.password_validation import validate_password
+from rest_framework import serializers
+from .models import User
+from mentor.models import Mentor
+from donor.models import Donor
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,3 +28,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+    
+
+
+
+class MentorProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mentor
+        fields = ['role', 'expertise', 'rating', 'available']
+
+class DonorProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Donor
+        fields = ['role', 'expertise', 'rating', 'available']
+

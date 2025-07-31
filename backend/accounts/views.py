@@ -7,6 +7,77 @@ from rest_framework.authtoken.models import Token
 from .serializers import RegisterSerializer, UserSerializer
 from .models import User
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+
+from .models import User
+from mentor.models import Mentor
+from donor.models import Donor
+from youth.models import Youth
+
+
+from youth.serializers import YouthSerializer
+from mentor.serializers import MentorSerializer
+from donor.serializers import DonorSerializer
+
+
+@api_view(['GET', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def user_profile_view(request):
+    user = request.user
+
+    # PATCH — Update profile
+    if request.method == 'PATCH':
+        if user.role == 'mentor':
+            profile = get_object_or_404(Mentor, user=user)
+            serializer = MentorSerializer(profile, data=request.data, partial=True)
+            serializer.files = request.FILES
+        elif user.role == 'donor':
+            profile = get_object_or_404(Donor, user=user)
+            serializer = DonorSerializer(profile, data=request.data, partial=True)
+            serializer.files = request.FILES
+        elif user.role == 'youth':
+            profile = get_object_or_404(Youth, user=user)
+            serializer = YouthSerializer(profile, data=request.data, partial=True)
+            serializer.files = request.FILES
+        else:
+            return Response({"detail": "Profile update not allowed for this role."}, status=400)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    # GET — Retrieve profile
+    base_data = {
+        "full_name": user.full_name,
+        "email": user.email,
+        "role": user.role,
+        "image": None
+    }
+
+    if user.role == 'mentor':
+        mentor = get_object_or_404(Mentor, user=user)
+        base_data["image"] = mentor.image.url if mentor.image else None
+        profile_data = MentorSerializer(mentor, context={'request': request}).data
+        return Response({**base_data, **profile_data})
+
+    elif user.role == 'donor':
+        donor = get_object_or_404(Donor, user=user)
+        base_data["image"] = donor.image.url if donor.image else None
+        profile_data = DonorSerializer(donor, context={'request': request}).data
+        return Response({**base_data, **profile_data})
+
+    elif user.role == 'youth':
+        youth = get_object_or_404(Youth, user=user)
+        profile_data = YouthSerializer(youth, context={'request': request}).data
+        return Response(profile_data)
+
+    return Response(base_data)
+
+
 
 @api_view(['POST'])
 def register(request):

@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, permissions
-from .models import MoodCheckIn, SupportPost, SupportReply
+from .models import MoodCheckIn, SupportPost, SupportReply, JournalEntry
 from .serializers import MoodCheckInSerializer, JournalEntrySerializer, SupportPostSerializer, SupportReplySerializer
 
 class MoodCheckInView(APIView):
@@ -25,6 +25,11 @@ class JournalEntryView(APIView):
             serializer.save(user=request.user)
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
+    
+    def get(self, request):
+        entries = JournalEntry.objects.filter(user=request.user).order_by('-timestamp')
+        serializer = JournalEntrySerializer(entries, many=True)
+        return Response(serializer.data)
 
 class SupportPostListCreateView(generics.ListCreateAPIView):
     queryset = SupportPost.objects.all().order_by('-created_at')

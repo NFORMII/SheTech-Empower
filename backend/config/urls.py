@@ -11,6 +11,8 @@ urlpatterns = [
     path('api/stories/', include('stories.urls')),
     path('api/microgrants/', include('microgrants.urls')),
     path('api/mentor/', include('mentor.urls')),
+    path('api/youth/', include('youth.urls')),
+    path('api/donor/', include('donor.urls')),
     path('api/healing/', include('healing.urls')),
     path('api/learning/', include('learning.urls')),
     path('api/dashboard/', include('dashboard.urls')),

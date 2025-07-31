@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'learning',
     'microgrants',
     'mentor',
+    'donor',
+    'youth',
     'stories',
     'dashboard',
 ]

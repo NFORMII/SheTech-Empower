@@ -20,4 +20,4 @@ class Story(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def author_display(self):
-        return "Anonymous" if self.anonymous else self.user.first_name
+        return "Anonymous" if self.anonymous else self.user.full_name

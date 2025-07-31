@@ -9,6 +9,13 @@ from healing.models import MoodCheckIn, JournalEntry
 from learning.models import Enrollment
 from microgrants.models import MicrograntApplication
 # from notifications.models import Notification  # optional
+from rest_framework.response import Response
+from mentor.serializers import MentorSerializer
+from donor.serializers import DonorSerializer
+from mentor.models import Mentor
+from donor.models import Donor
+from rest_framework.generics import get_object_or_404
+
 
 class DashboardView(APIView):
     permission_classes = [IsAuthenticated]
@@ -17,6 +24,7 @@ class DashboardView(APIView):
         user = request.user
 
         if user.role == 'youth':
+            print("youth")
             now = timezone.now()
             week_ago = now - timedelta(days=7)
 
@@ -63,6 +71,21 @@ class DashboardView(APIView):
                 "mentorship_session_time": mentorship_session_time,
                 "notifications": notifications,
             })
+
+        elif user.role == 'mentor':
+            print("mentor")
+            mentor = get_object_or_404(Mentor, user=user)
+            serializer = MentorSerializer(mentor, context={'request': request})
+            return Response(serializer.data)
+        
+        elif user.role == 'donor':
+            print("donor")
+            donor = get_object_or_404(Donor, user=user)
+            serializer = DonorSerializer(donor, context={'request': request})
+            return Response(serializer.data)
+        
+        # elif user.role == 'admin':
+        #     pass
 
         else:
             return Response({})
