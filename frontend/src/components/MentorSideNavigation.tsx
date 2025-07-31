@@ -78,6 +78,12 @@ export const MentorSideNavigation: React.FC = () => {
       path: '/mentor/settings',
       icon: Settings,
       description: 'Manage your mentor profile and preferences'
+    },
+    {
+      name: 'Profile',
+      path: '/my-profile',
+      icon: Settings,
+      description: 'Manage your mentor profile and preferences'
     }
   ];
 

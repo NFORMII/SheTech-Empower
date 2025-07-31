@@ -61,13 +61,22 @@ const Welcome: React.FC = () => {
         login(response.data.token, response.data.user);
 
         const userRole = response.data.user.role;
-        if (userRole === "mentor") {
-          navigate("/mentor");
-        } else if (userRole === "donor") {
-          navigate("/donor");
-        } else {
+
+        if (userRole) {
           navigate("/dashboard");
         }
+
+
+        // const userRole = response.data.user.role;
+        // if (userRole === "mentor") {
+        //   // navigate("/mentor");
+        //   navigate("/dashboard");
+        // } else if (userRole === "donor") {
+        //   // navigate("/donor");
+        //   navigate("/dashboard");
+        // } else {
+        //   navigate("/dashboard");
+        // }
       } else {
         const response = await api.post("/accounts/login/", {
           email: data.email,

@@ -63,6 +63,12 @@ export const DonorSideNavigation: React.FC = () => {
       path: '/donor/settings',
       icon: Settings,
       description: 'Manage your donor preferences'
+    },
+    {
+      name: 'Profile',
+      path: '/my-profile',
+      icon: Settings,
+      description: 'Manage your donor preferences'
     }
   ];
 

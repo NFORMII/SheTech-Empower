@@ -99,6 +99,7 @@ const ProfilePage: React.FC = () => {
     try {
       setLoading(true);
       const res = await api.get('/accounts/profile/');
+      console.log("RES " + JSON.stringify(res))
       const fetchedProfile: Profile = res.data;
       setProfile(fetchedProfile);
       setFormData({
@@ -126,7 +127,6 @@ const ProfilePage: React.FC = () => {
         preferred_contact_method: fetchedProfile.preferred_contact_method || '',
         contact_phone: fetchedProfile.contact_phone || '',
         alternative_email: fetchedProfile.alternative_email || '',
-        image: fetchedProfile.image_url || null,
       });
 
       // Fetch journal entries
@@ -350,8 +350,6 @@ const ProfilePage: React.FC = () => {
                       preferred_contact_method: profile.preferred_contact_method || '',
                       contact_phone: profile.contact_phone || '',
                       alternative_email: profile.alternative_email || '',
-                      image: profile.image_url || null,
-
                     });
                     setError('');
                   }}
@@ -384,7 +382,6 @@ const ProfilePage: React.FC = () => {
               <div className="flex-shrink-0 relative">
                 <img
                   src={image || '/default-avatar.png'}
-                  // src={profile?.image ? `${profile.image}?t=${Date.now()}` : '/default-avatar.png'}
                   alt="User Avatar"
                   className="w-40 h-40 rounded-full object-cover border-4 border-blue-300 shadow-lg ring-4 ring-blue-100"
                 />

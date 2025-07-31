@@ -15,11 +15,14 @@ import DonorDashboard from './pages/donor';
 import DonorStories from './pages/donor/stories';
 import DonorMicrogrants from './pages/donor/microgrants';
 import MentorDashboard from './pages/mentor';
-import MentorApplications from './pages/mentor/applications';
-import MentorMentees from './pages/mentor/mentees';
-import MentorSessions from './pages/mentor/sessions';
-import MentorStories from './pages/mentor/stories';
-import MentorMicrogrants from './pages/mentor/microgrants';
+import { MentorshipApplicationsPage } from './pages/mentor/applications';
+import {MyMenteesPage} from './pages/mentor/mentees';
+import {SessionsPage} from './pages/mentor/sessions';
+import {PeopleStoriesPage} from './pages/mentor/stories';
+import {MicrograntReviewsPage} from './pages/mentor/microgrants';
+import {ResourcesPage} from './pages/mentor/resources';
+import {MessagesPage} from './pages/mentor/messages';
+import {SettingsPage} from './pages/mentor/settings';
 import ProfilePage from './pages/ProfilePage';
 
 export function App() {
@@ -75,46 +78,59 @@ export function App() {
                 </PrivateRoute>
               } 
             />
-            <Route
-              path="/mentor/applications"
-              element={
-                <PrivateRoute requiredRole="mentor">
-                  <MentorApplications />
-                </PrivateRoute>
-              }
+            <Route 
+            path="/mentor/applications" 
+            element={
+            <PrivateRoute>
+            <MentorshipApplicationsPage />
+            // </PrivateRoute>
+            }
+          />
+
+          <Route 
+          path="/mentor/mentees"
+            element={
+            <PrivateRoute>
+            <MyMenteesPage/>
+            </PrivateRoute>
+            } 
             />
-            <Route
-              path="/mentor/mentees"
-              element={
-                <PrivateRoute requiredRole="mentor">
-                  <MentorMentees />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/mentor/sessions"
-              element={
-                <PrivateRoute requiredRole="mentor">
-                  <MentorSessions />
-                </PrivateRoute>
-              }
+            <Route 
+            path="/mentor/sessions" 
+            element={
+            <SessionsPage/>
+            }
             />
             <Route
               path="/mentor/stories"
               element={
-                <PrivateRoute requiredRole="mentor">
-                  <MentorStories />
-                </PrivateRoute>
-              }
+            <PeopleStoriesPage />
+              } 
+            />
+            <Route 
+            path="/mentor/microgrants" 
+            element={
+            <MicrograntReviewsPage />
+            } 
             />
             <Route
-              path="/mentor/microgrants"
-              element={
-                <PrivateRoute requiredRole="mentor">
-                  <MentorMicrogrants />
-                </PrivateRoute>
-              }
+            path="/mentor/resources" 
+            element={
+            <ResourcesPage />
+            } 
             />
+          <Route 
+          path="/mentor/messages" 
+            element={
+            <MessagesPage />
+            } 
+            />
+          <Route
+              path="/mentor/settings" 
+              element={
+              <SettingsPage />
+              } 
+              />
             <Route path="/donor" element={
               <PrivateRoute>
                 <DonorDashboard />

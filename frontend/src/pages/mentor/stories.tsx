@@ -1,34 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import api from '../../api/axios';
-import { Navigation } from '../../components/Navigation';
-import { MentorSideNavigation } from '../../components/MentorSideNavigation';
-import { Clock, Heart } from 'lucide-react';
+// src/pages/PeopleStoriesPage.tsx
+import React, { useState, useEffect } from 'react';
+import { Quote } from 'lucide-react';
 
 interface Story {
-  id: number;
-  mentee_name: string;
+  id: string;
+  menteeName: string;
   title: string;
-  content: string;
-  date_shared: string;
-  impact_area: string;
-  likes_count: number;
-  image?: string;
+  storyContent: string;
+  date: string; // YYYY-MM-DD
+  menteeAvatar?: string;
 }
 
-const MentorStories: React.FC = () => {
+export const PeopleStoriesPage: React.FC = () => {
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Simulate fetching data from an API
   useEffect(() => {
     const fetchStories = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        setLoading(true);
-        const response = await api.get('/mentor/stories/');
-        setStories(response.data);
+        // Mock data
+        const mockStories: Story[] = [
+          {
+            id: 'story1',
+            menteeName: 'Grace Hopper',
+            title: 'Found My Dream Job!',
+            storyContent: 'My mentor helped me refine my resume, prepare for interviews, and build confidence. Thanks to their guidance, I landed my dream job as a software engineer at a leading tech company!',
+            date: '2025-07-10',
+            menteeAvatar: 'https://via.placeholder.com/40/8A2BE2/FFFFFF?text=GH',
+          },
+          {
+            id: 'story2',
+            menteeName: 'Alan Turing',
+            title: 'Successfully Launched My Startup',
+            storyContent: 'The entrepreneurial mentorship program was invaluable. My mentor provided critical insights into market analysis, funding strategies, and legal aspects, enabling me to launch my startup successfully.',
+            date: '2025-06-25',
+            menteeAvatar: 'https://via.placeholder.com/40/008080/FFFFFF?text=AT',
+          },
+          {
+            id: 'story3',
+            menteeName: 'Ada Lovelace',
+            title: 'Improved My Leadership Skills',
+            storyContent: 'Through regular sessions and practical exercises, my mentor helped me develop crucial leadership qualities. I now feel much more confident leading my team and managing complex projects.',
+            date: '2025-07-01',
+            menteeAvatar: 'https://via.placeholder.com/40/FF4500/FFFFFF?text=AL',
+          },
+        ];
+        setStories(mockStories);
       } catch (err: any) {
-        console.error('Failed to load stories:', err);
-        setError(err.response?.data?.message || 'Failed to load stories');
+        setError(err.message || 'An unknown error occurred');
       } finally {
         setLoading(false);
       }
@@ -38,72 +61,74 @@ const MentorStories: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div className="text-center py-10">Loading...</div>;
+    return (
+      <div className="container mx-auto py-8 text-center text-gray-600">
+        Loading stories...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center py-10 text-red-600">{error}</div>;
+    return (
+      <div className="container mx-auto py-8 text-center text-red-600">
+        Error: {error}
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <MentorSideNavigation />
-      <div className="flex-grow pb-20 md:pb-0 md:ml-64">
-        <header className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-            <h1 className="text-xl font-montserrat font-bold text-gray-900">Mentee Stories</h1>
-            <p className="text-gray-600 mt-1">Success stories shared by your mentees</p>
-          </div>
-        </header>
+    <div className="container mx-auto py-8">
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">People Stories</h1>
+      <p className="text-gray-600 mb-8">Inspiring success stories from your mentees and others in the program.</p>
 
-        <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-6">
-            {stories.map((story) => (
-              <div 
-                key={story.id} 
-                className="bg-white shadow rounded-lg overflow-hidden"
-              >
-                {story.image && (
-                  <div className="w-full h-48 bg-gray-200">
-                    <img
-                      src={story.image}
-                      alt={story.title}
-                      className="w-full h-full object-cover"
-                    />
+      {stories.length === 0 ? (
+        <div className="bg-white p-8 rounded-lg shadow-sm text-center text-gray-500">
+          <p className="text-lg">No success stories to display yet.</p>
+          <p className="mt-2">Encourage your mentees to share their journey!</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {stories.map((story) => (
+            <div key={story.id} className="bg-white p-6 rounded-lg shadow-lg flex flex-col">
+              <div className="flex items-center mb-4">
+                {story.menteeAvatar ? (
+                  <img src={story.menteeAvatar} alt={story.menteeName} className="w-10 h-10 rounded-full mr-3 object-cover" />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3 text-gray-600 text-sm font-semibold">
+                    {story.menteeName.split(' ').map(n => n[0]).join('')}
                   </div>
                 )}
-                <div className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="text-lg font-medium text-gray-900">{story.title}</h3>
-                      <p className="text-sm text-gray-500">By {story.mentee_name}</p>
-                    </div>
-                    <span className="px-3 py-1 rounded-full text-sm bg-primary/10 text-primary">
-                      {story.impact_area}
-                    </span>
-                  </div>
-
-                  <p className="mt-4 text-gray-600">{story.content}</p>
-
-                  <div className="mt-6 flex items-center justify-between text-sm text-gray-500">
-                    <div className="flex items-center">
-                      <Clock className="h-4 w-4 mr-2" />
-                      <span>Shared on {story.date_shared}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Heart className="h-4 w-4 mr-2 text-red-500" />
-                      <span>{story.likes_count} likes</span>
-                    </div>
-                  </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">{story.menteeName}</h3>
+                  <p className="text-sm text-gray-500">{new Date(story.date).toLocaleDateString()}</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </main>
+              <h4 className="text-xl font-bold text-primary mb-3">{story.title}</h4>
+              <div className="flex-grow">
+                <blockquote className="text-gray-700 italic border-l-4 border-primary pl-4 py-2">
+                  <p className="relative">
+                    <Quote className="absolute -top-2 -left-7 text-gray-300 transform -scale-x-100" size={30} />
+                    {story.storyContent}
+                    <Quote className="absolute -bottom-2 -right-7 text-gray-300" size={30} />
+                  </p>
+                </blockquote>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* More Functions & Ideas: */}
+      <div className="mt-10 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+        <h3 className="text-xl font-semibold text-blue-800 mb-4">Further Enhancements:</h3>
+        <ul className="list-disc list-inside text-blue-700 space-y-2">
+          <li>Allow mentees (or mentors on behalf of mentees) to submit new stories via a form.</li>
+          <li>Implement a "featured stories" section or carousel.</li>
+          <li>Add categories/tags for stories (e.g., "Career Change," "Startup Success").</li>
+          <li>Allow comments or reactions on stories.</li>
+          <li>Integrate with social media sharing functionalities.</li>
+        </ul>
       </div>
-      <Navigation />
     </div>
   );
 };
-
-export default MentorStories;
