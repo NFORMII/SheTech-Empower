@@ -16,7 +16,7 @@ const youthMenu = [
 ];
 
 const mentorMenu = [
-  { path: '/mentor', label: 'Dashboard', icon: <HomeIcon size={20} /> },
+  { path: '/dashboard', label: 'Dashboard', icon: <HomeIcon size={20} /> },
   { path: '/mentor/mentees', label: 'My Mentees', icon: <UsersIcon size={20} /> },
   { path: '/mentor/applications', label: 'Applications', icon: <UserCheck size={20} /> },
   { path: '/mentor/sessions', label: 'Sessions', icon: <Calendar size={20} /> },
@@ -29,7 +29,7 @@ const mentorMenu = [
 ];
 
 const donorMenu = [
-  { path: '/donor', label: 'Dashboard', icon: <HomeIcon size={20} /> },
+  { path: '/dashboard', label: 'Dashboard', icon: <HomeIcon size={20} /> },
   { path: '/donor/stories', label: 'Stories', icon: <BookOpenIcon size={20} /> },
   { path: '/donor/microgrants', label: 'Microgrants', icon: <GiftIcon size={20} /> },
   { path: '/donor/impact', label: 'Impact', icon: <BarChart3 size={20} /> },
@@ -52,13 +52,16 @@ export const Navigation: React.FC = () => {
   };
 
   const navItems = getMenu();
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => location.pathname.startsWith(path);
+  // const isActive = (path: string) => location.pathname === path;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg md:hidden">
       <div className="flex justify-around items-center h-16">
         {navItems.map(item => (
-          <Link key={item.path} to={item.path} className={`flex flex-col items-center justify-center px-2 py-1 ${isActive(item.path) ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}>
+          <Link key={item.path} to={item.path} className={`flex flex-col items-center justify-center px-2 py-1 transition-colors duration-200 ${
+              isActive(item.path) ? 'text-primary font-semibold' : 'text-gray-500 hover:text-primary'
+            }`}>
             <div className="mb-1">{item.icon}</div>
             <span className="text-xs font-medium">{item.label}</span>
           </Link>
@@ -73,10 +76,14 @@ export const SideNavigation: React.FC = () => {
   const { user } = useAuth();
 
   const getMenu = () => {
-    if (user?.role === 'mentor') return mentorMenu;
-    if (user?.role === 'donor') return donorMenu;
-    return youthMenu;
+    switch (user?.role) {
+      case 'mentor': return mentorMenu;
+      case 'donor': return donorMenu;
+      case 'youth': return youthMenu;
+      default: return []; // or null
+    }
   };
+
 
   const navItems = getMenu();
   const isActive = (path: string) => location.pathname === path;

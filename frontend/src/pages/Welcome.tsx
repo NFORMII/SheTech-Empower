@@ -61,22 +61,9 @@ const Welcome: React.FC = () => {
         login(response.data.token, response.data.user);
 
         const userRole = response.data.user.role;
-
         if (userRole) {
-          navigate("/dashboard");
+          navigate("/dashboard");  // Just go to a single route
         }
-
-
-        // const userRole = response.data.user.role;
-        // if (userRole === "mentor") {
-        //   // navigate("/mentor");
-        //   navigate("/dashboard");
-        // } else if (userRole === "donor") {
-        //   // navigate("/donor");
-        //   navigate("/dashboard");
-        // } else {
-        //   navigate("/dashboard");
-        // }
       } else {
         const response = await api.post("/accounts/login/", {
           email: data.email,
@@ -90,14 +77,11 @@ const Welcome: React.FC = () => {
         localStorage.setItem("token", response.data.token);
         login(response.data.token, response.data.user);
 
+
         // Use the role from the response, not the locally selected role
         const userRole = response.data.user.role;
-        if (userRole === "mentor") {
-          navigate("/mentor");
-        } else if (userRole === "donor") {
-          navigate("/donor");
-        } else {
-          navigate("/dashboard");
+        if (userRole) {
+          navigate("/dashboard");  // Just go to a single route
         }
       }
     } catch (error: any) {

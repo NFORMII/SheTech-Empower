@@ -30,7 +30,7 @@ export const PeopleStoriesPage: React.FC = () => {
             title: 'Found My Dream Job!',
             storyContent: 'My mentor helped me refine my resume, prepare for interviews, and build confidence. Thanks to their guidance, I landed my dream job as a software engineer at a leading tech company!',
             date: '2025-07-10',
-            menteeAvatar: 'https://via.placeholder.com/40/8A2BE2/FFFFFF?text=GH',
+            // menteeAvatar: 'https://via.placeholder.com/40/8A2BE2/FFFFFF?text=GH',
           },
           {
             id: 'story2',
@@ -38,7 +38,7 @@ export const PeopleStoriesPage: React.FC = () => {
             title: 'Successfully Launched My Startup',
             storyContent: 'The entrepreneurial mentorship program was invaluable. My mentor provided critical insights into market analysis, funding strategies, and legal aspects, enabling me to launch my startup successfully.',
             date: '2025-06-25',
-            menteeAvatar: 'https://via.placeholder.com/40/008080/FFFFFF?text=AT',
+            // menteeAvatar: 'https://via.placeholder.com/40/008080/FFFFFF?text=AT',
           },
           {
             id: 'story3',
@@ -46,7 +46,7 @@ export const PeopleStoriesPage: React.FC = () => {
             title: 'Improved My Leadership Skills',
             storyContent: 'Through regular sessions and practical exercises, my mentor helped me develop crucial leadership qualities. I now feel much more confident leading my team and managing complex projects.',
             date: '2025-07-01',
-            menteeAvatar: 'https://via.placeholder.com/40/FF4500/FFFFFF?text=AL',
+            // menteeAvatar: 'https://via.placeholder.com/40/FF4500/FFFFFF?text=AL',
           },
         ];
         setStories(mockStories);
